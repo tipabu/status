@@ -212,7 +212,7 @@ if last is None:
     d.text((x, y + h), "Nothing scheduled!", font=fonts[20])
 
 buffer = io.BytesIO()
-im.save(buffer, format="png")
+im.save(buffer, format="bmp")
 buffer.seek(0)
 
 conn = swiftclient.client.Connection(
@@ -220,4 +220,4 @@ conn = swiftclient.client.Connection(
     os.environ['ST_USER'],
     os.environ['ST_KEY'],
 )
-conn.put_object('public', 'now.png', buffer)
+conn.put_object('public', 'now.bmp', buffer, headers={'Refresh': '30'})
