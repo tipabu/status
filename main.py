@@ -152,15 +152,15 @@ if True:
 
     #d.text((200, 500 - 20), time.strftime("%I:%M"), anchor="mm", font=fonts[100])
     # centered at (200, 480), radius 100
-    d.ellipse(((100, 380), (300, 580)), outline='black')
+    d.ellipse(((100, 380), (300, 580)), outline='black', width=2)
     for x in range(12):
         rad = x * math.pi / 6
         if x % 3 == 0:
             d.line((
                 (200 + 88 * math.sin(rad), 480 - 88 * math.cos(rad)),
                 (200 + 96 * math.sin(rad), 480 - 96 * math.cos(rad)),
-            ), width=2)
-        elif False:
+            ), width=3)
+        else:
             d.line((
                 (200 + 92 * math.sin(rad), 480 - 92 * math.cos(rad)),
                 (200 + 96 * math.sin(rad), 480 - 96 * math.cos(rad)),
@@ -170,12 +170,12 @@ if True:
     d.line((
         (200, 480),
         (200 + 85 * math.sin(rad), 480 - 85 * math.cos(rad)),
-    ), width=2)
+    ), width=4)
     rad = (now.hour + now.minute / 60) / 12 * 2 * math.pi
     d.line((
         (200, 480),
-        (200 + 70 * math.sin(rad), 480 - 70 * math.cos(rad)),
-    ), width=5)
+        (200 + 65 * math.sin(rad), 480 - 65 * math.cos(rad)),
+    ), width=8)
 
 W, H = 360, 600
 if False:
