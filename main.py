@@ -30,7 +30,7 @@ CACHE_DIR = pathlib.Path(tempfile.gettempdir()) / 'status-cache'
 DEFAULT_TTL = 3600
 WEATHER_TTL = DEFAULT_TTL
 TRANSIT_TTL = 60
-CALENDAR_TTL = DEFAULT_TTL
+CALENDAR_TTL = 300
 
 def cached_get(url, ttl=None):
     ttl = DEFAULT_TTL if ttl is None else ttl
