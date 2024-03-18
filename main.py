@@ -211,7 +211,7 @@ for e in schedule.timeline.overlapping(now, now + datetime.timedelta(days=7)):
     had_events = True
     if isinstance(e.dtstart, datetime.datetime):
         curr = max(now, e.dtstart.astimezone()).date()
-        t = e.dtstart.astimezone().strftime("%I:%M%p")
+        t = e.dtstart.astimezone().strftime("%I:%M%p").lstrip('0')
         end = e.dtend.astimezone().date()
     else:
         curr = max(now.date(), e.dtstart)
