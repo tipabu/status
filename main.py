@@ -234,7 +234,7 @@ for e in schedule.timeline.overlapping(now, now + datetime.timedelta(days=7)):
         h += 2
     last = (curr, end)
     d.text((x + 10, y + h), e.summary, font=fonts[20])
-    d.text((x + 340, y + h), t, anchor='rt', font=fonts[20])
+    d.text((x + 350, y + h), t, anchor='rt', font=fonts[20])
     h += 21
 
 if last is None:
