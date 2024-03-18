@@ -138,7 +138,10 @@ if True:
         h += 20
         d.text((20, h), str(pred['temperature']) + '\N{DEGREE SIGN}' + pred['temperatureUnit'], font=fonts[60])
         h += 60
-        d.text((20, h), pred['shortForecast'], font=fonts[20])
+        if len(pred['shortForecast']) < 20:
+            d.text((20, h), pred['shortForecast'], font=fonts[20])
+        else:
+            d.text((20, h), pred['shortForecast'], font=fonts[12])
         h += 40
 
     h = 20
