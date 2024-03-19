@@ -133,26 +133,19 @@ if False:
 if True:
     # NWS weather
     h = 20
-    for pred in weather['properties']['periods'][:6:2]:
-        d.text((20, h), pred['name'], font=fonts[20])
+    for i, pred in enumerate(weather['properties']['periods'][:6]):
+        x = 200 if i % 2 else 20
+        d.text((x, h), pred['name'], font=fonts[20])
         h += 20
-        d.text((20, h), str(pred['temperature']) + '\N{DEGREE SIGN}' + pred['temperatureUnit'], font=fonts[60])
+        d.text((x, h), str(pred['temperature']) + '\N{DEGREE SIGN}' + pred['temperatureUnit'], font=fonts[60])
         h += 60
         if len(pred['shortForecast']) < 20:
-            d.text((20, h), pred['shortForecast'], font=fonts[20])
+            d.text((x, h), pred['shortForecast'], font=fonts[20])
         else:
-            d.text((20, h), pred['shortForecast'], font=fonts[12])
+            d.text((x, h), pred['shortForecast'], font=fonts[12])
         h += 40
 
-    h = 20
-    for pred in weather['properties']['periods'][1:6:2]:
-        d.text((200, h), pred['name'], font=fonts[20])
-        h += 20
-        d.text((200, h), str(pred['temperature']) + '\N{DEGREE SIGN}' + pred['temperatureUnit'], font=fonts[60])
-        h += 60
-        d.text((200, h), pred['shortForecast'], font=fonts[20])
-        h += 40
-
+    # Clock
     #d.text((200, 500 - 20), time.strftime("%I:%M"), anchor="mm", font=fonts[100])
     # centered at (200, 480), radius 100
     d.ellipse(((100, 380), (300, 580)), outline='black', width=2)
