@@ -144,6 +144,9 @@ if True:
         else:
             d.text((x, h), pred['shortForecast'], font=fonts[12])
         h += 40
+        if i % 2 == 0:
+            # Rewind for next column
+            h -= 120
 
     # Clock
     #d.text((200, 500 - 20), time.strftime("%I:%M"), anchor="mm", font=fonts[100])
