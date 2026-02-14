@@ -1,3 +1,4 @@
 ical
 pillow
 requests
+python-swiftclient
