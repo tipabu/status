@@ -1,3 +1,4 @@
+import argparse
 import datetime
 import io
 import math
@@ -49,6 +50,10 @@ def get_transit_schedules(stops):
             })
     return result
 
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--no-upload", action="store_false", dest="upload")
+args = parser.parse_args()
 
 #weather = utils.cached_json('https://wttr.in/94116?format=j1', WEATHER_TTL)
 lat, lon = 37.74, -122.5
@@ -193,13 +198,17 @@ for e in schedule.timeline.overlapping(now, now + datetime.timedelta(days=7)):
 if last is None:
     d.text((x, y + h), "Nothing scheduled!", font=fonts[20])
 
-buffer = io.BytesIO()
-im.save(buffer, format="bmp")
-buffer.seek(0)
+if args.upload:
+    buffer = io.BytesIO()
+    im.save(buffer, format="bmp")
+    buffer.seek(0)
 
-conn = swiftclient.client.Connection(
-    os.environ['ST_AUTH'],
-    os.environ['ST_USER'],
-    os.environ['ST_KEY'],
-)
-conn.put_object('public', 'now.bmp', buffer, headers={'Refresh': '30'})
+    conn = swiftclient.client.Connection(
+        os.environ['ST_AUTH'],
+        os.environ['ST_USER'],
+        os.environ['ST_KEY'],
+    )
+    conn.put_object('public', 'now.bmp', buffer, headers={'Refresh': '30'})
+else:
+    with open('now.bmp', 'wb') as fp:
+        im.save(fp, format="bmp")
