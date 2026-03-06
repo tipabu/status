@@ -1,22 +1,14 @@
 import datetime
-import errno
-import hashlib
 import io
-import json
 import math
 import os
-import pathlib
-import tempfile
 import time
 
 from ical.calendar_stream import IcsCalendarStream
 from PIL import Image, ImageDraw, ImageFont
-import requests
 import swiftclient.client
-try:
-    import xattr
-except ImportError:
-    xattr = None
+
+from status import utils
 
 class FontCache(dict):
     def __missing__(self, sz):
@@ -26,51 +18,16 @@ class FontCache(dict):
 fonts = FontCache()
 del FontCache
 
-CACHE_DIR = pathlib.Path(tempfile.gettempdir()) / 'status-cache'
-DEFAULT_TTL = 3600
-WEATHER_TTL = DEFAULT_TTL
+WEATHER_TTL = utils.DEFAULT_TTL
 TRANSIT_TTL = 60
 CALENDAR_TTL = 300
-
-def cached_get(url, ttl=None):
-    ttl = DEFAULT_TTL if ttl is None else ttl
-    f = CACHE_DIR / hashlib.md5(url.encode('ascii')).hexdigest()[:8]
-    if ttl:
-        try:
-            st = os.stat(f)
-        except OSError as e:
-            if e.errno != errno.ENOENT:
-                raise
-            cached = False
-        else:
-            cached = ((time.time() - st.st_mtime) < ttl)
-
-        if cached:
-            with open(f, 'rb') as fp:
-                return fp.read()
-        # Else, make request & cache it
-    data = requests.get(url).content
-    os.makedirs(CACHE_DIR, exist_ok=True)
-    with open(f, 'wb') as fp:
-        fp.write(data)
-        if xattr:
-            xattr.setxattr(fp, b'user.url', url.encode('utf8'))
-    return data
-
-def cached_json(url, ttl=None):
-    data = cached_get(url, ttl)
-    try:
-        return json.loads(data)
-    except ValueError:
-        # cache is bad?
-        return json.loads(cached_get(url, 0))
 
 def get_transit_schedules(stops):
     result = {}
     for stop_code, lines in stops.items():
         if isinstance(lines, str):
             lines = [lines]
-        data = cached_json(f'https://www.sfmta.com/umo/stopcodes/{stop_code}/predictions', TRANSIT_TTL)
+        data = utils.cached_json(f'https://www.sfmta.com/umo/stopcodes/{stop_code}/predictions', TRANSIT_TTL)
         result[stop_code] = {
             'name': data[0]['stop']['name'],
             'lines': [],
@@ -93,16 +50,16 @@ def get_transit_schedules(stops):
     return result
 
 
-#weather = cached_json('https://wttr.in/94116?format=j1', WEATHER_TTL)
+#weather = utils.cached_json('https://wttr.in/94116?format=j1', WEATHER_TTL)
 lat, lon = 37.74, -122.5
-weather = cached_json(f'https://api.weather.gov/points/{lat},{lon}', WEATHER_TTL)
-weather = cached_json(weather['properties']['forecast'], WEATHER_TTL)
+weather = utils.cached_json(f'https://api.weather.gov/points/{lat},{lon}', WEATHER_TTL)
+weather = utils.cached_json(weather['properties']['forecast'], WEATHER_TTL)
 #transit = get_transit_schedules({
 #    16633: ['LBUS', 'L'],
 #    16454: '23',
 #    #16994: ['K', 'L', 'M', 'S'],
 #})
-schedule = IcsCalendarStream.calendar_from_ics(cached_get(
+schedule = IcsCalendarStream.calendar_from_ics(utils.cached_get(
     os.environ['ICAL_URL'], CALENDAR_TTL).decode('utf8'))
 
 
