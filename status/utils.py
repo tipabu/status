@@ -39,8 +39,8 @@ def cached_get(url, ttl=None):
     with open(f, 'wb') as fp:
         fp.write(data)
         if hasattr(xattr, 'setxattr'):
-            xattr.setxattr(fp, b'user.url', url.encode('utf8'))
-            xattr.setxattr(fp, b'user.retrieved', str(now).encode('utf8'))
+            xattr.setxattr(f, b'user.url', url.encode('utf8'))
+            xattr.setxattr(f, b'user.retrieved', str(now).encode('utf8'))
     return data
 
 
